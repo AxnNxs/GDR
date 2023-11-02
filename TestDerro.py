@@ -165,17 +165,20 @@ def main():
                            "3 - Doppio: quando i due dadi sono uguali si raddoppiano\n")
         if user_input == "1":
             print("Ok, considererò Danno Critico in fase di testing per il " + str(warrior.name) + '...')
-            string = warrior.name + '= scout'
+            string = warrior.name + ' = scout'
             skills.append(string)
+            warriorList[-1].name = string
         elif user_input == "2":
-            string = warrior.name + '= selvaggio'
+            string = warrior.name + ' = selvaggio'
             print("Ok, considererò Malus 6+ in fase di testing per il " + str(warrior.name) + '...')
-            print("Nota: se il dado maggiore è inferiore a 4 questa abilità è nulla.")
+            print("Nota: se il dado maggiore è inferiore al d6 questa abilità è nulla.")
             skills.append(string)
+            warriorList[-1].name = string
         elif user_input == "3":
-            string = warrior.name + '= soldato'
+            string = warrior.name + ' = soldato'
             print("Ok, considererò Doppio in fase di testing per il " + str(warrior.name) + '...')
             skills.append(string)
+            warriorList[-1].name = string
         else:
             print("Ok, nessuna skill inserita per " + str(warrior.name))
 
@@ -279,9 +282,12 @@ def main():
                     skill_count += 1
                     print("     Malus 6+:   sottraggo 1 al danno totale.")
                     dan_max -= 1
-                if (str(warrior.name)).lower() in skills and 'soldato' in (str(warrior.name)).lower() and (result1 == result2): # Doppio
+                if (str(warrior.name)).lower() in skills and 'soldato' in (str(warrior.name)).lower() and (result1 == result2 or explosions == 2): # Doppio
                     skill_count += 1
                     print("     Doppio:   raddoppio la somma!")
+                    # if(explosions == 2):
+                    #     print("QUADRUPLO!")
+                    #     dan_max += throwmax + throwmin
                     dan_max += throwmax + throwmin
                 print("     Il danno sferrato ammonta in totale a:                   " + str(dan_max))
                 dan_tot += dan_max
