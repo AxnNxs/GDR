@@ -159,17 +159,21 @@ def main():
         warrior = warriorClass()
         insert_values(warriorList, warrior)
 
-        user_input = input("Che abilità vuoi settare per questa classe? (Digita il numero corrispondente o premi altro per ignorare):\n1 - Danno Critico\n2 - Malus 6+\n3 - Doppio\n")
+        user_input = input("Che abilità vuoi settare per questa classe? (Digita il numero corrispondente o premi altro per ignorare):\n" +
+                           "1 - Danno Critico: il dado più piccolo viene raddoppiato quando il primo supera la soglia\n" +
+                           "2 - Malus 6+: quando il d8 fa 6+ si ha un malus di -1\n" +
+                           "3 - Doppio: quando i due dadi sono uguali si raddoppiano\n")
         if user_input == "1":
             print("Ok, considererò Danno Critico in fase di testing per il " + str(warrior.name) + '...')
-            string = warrior.name + '= soldato'
+            string = warrior.name + '= scout'
             skills.append(string)
         elif user_input == "2":
-            string = warrior.name + '= scout'
+            string = warrior.name + '= selvaggio'
             print("Ok, considererò Malus 6+ in fase di testing per il " + str(warrior.name) + '...')
+            print("Nota: se il dado maggiore è inferiore a 4 questa abilità è nulla.")
             skills.append(string)
         elif user_input == "3":
-            string = warrior.name + '= selvaggio'
+            string = warrior.name + '= soldato'
             print("Ok, considererò Doppio in fase di testing per il " + str(warrior.name) + '...')
             skills.append(string)
         else:
