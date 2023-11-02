@@ -44,16 +44,33 @@ class warriorClass:
 
 # altri metodi
 
-def insert_values():
+def insert_values(list, warrior):
     diceList = [2,4,6,8,10,12,20,100]
-    classe = input("Inserisci ora il nome della tua classe: ")
-    d1 = input("Inserisci ora il 1° dado di attacco. Specifica solo il numero, per esempio: per avere 1d6 digita solo 6): ")
+    c = False
+    classe = ''
+    while (c != True):
+        classe = input("Inserisci il nome della classe: ")
+        if len(list) > 0:
+            for i in range(0, len(list)):
+                if str(classe).lower() == list[i].name:
+                    print("L'olio è olio Derro... magari usa l'extravergine stavolta? ", end="")
+                    break
+                else:
+                    c = True
+        else:
+            c = True
+    d1 = input("Inserisci il 1° dado di attacco. Specifica solo il numero, i.e.: 6 per 1d6): ")
     while (int(d1) not in diceList):
         d1 = input("Eddai, famo i seri, sto dado non esiste... metti quello giusto va: ")
-    d2 = input("Inserisci ora il 2° dado di attacco. Specifica solo il numero, per esempio: per avere 1d6 digita solo 6): ")
+    d2 = input("Inserisci il 2° dado di attacco. Specifica solo il numero, i.e.: 6 per 1d6): ")
     while (int(d2) not in diceList):
         d2 = input("Ao che stai a giocà, sto dado non esiste... metti quello giusto va: ")
-    return (classe, d1, d2)
+
+    warrior.name = str(classe)
+    warrior.dice1 = int(d1)
+    warrior.dice2 = int(d2)
+    list.append(warrior)
+    return
 
 def insert_values_auto(list):
     soldato = warriorClass()
@@ -94,8 +111,8 @@ def main():
     print("Ciao Derro! Benvenuto al tuo simulatore di probabilità di quartiere!\n")
     warrior = warriorClass()
 
-    user_input = input("Se vuoi skippare le impostazioni manuali e partire con un preset, premi t.\nAltrimenti premi qualsiasi altro tasto: ")
-    if user_input.lower() == 't':
+    user_input = input("Se vuoi skippare le impostazioni manuali e partire con un preset, premi Y.\nAltrimenti premi N o qualsiasi altro tasto: ")
+    if user_input.lower() == 'y':
         skip = True
         insert_values_auto(warriorList)
         s = 3
@@ -119,17 +136,23 @@ def main():
 
     while (c != True and skip == False):
         warrior = warriorClass()
-        classe, d1, d2 = insert_values()
+        insert_values(warriorList, warrior)
 
-        warrior.name = str(classe)
-        warrior.dice1 = int(d1)
-        warrior.dice2 = int(d2)
-        warriorList.append(warrior)
-        user_input = input("Vuoi abilitare Dado Esplosivo per questa classe? (Digita y/n) ")
-        if user_input.lower() == "y":
-            print("Ok, considererò questa skill in fase di testing per il " + str(warrior.name) + '...')
+        user_input = input("Che abilità vuoi settare per questa classe? (Digita il numero corrispondente o premi altro per ignorare):\n1 - Danno Critico\n2 - Malus 6+\n3 - Doppio\n")
+        if user_input == "1":
+            print("Ok, considererò Danno Critico in fase di testing per il " + str(warrior.name) + '...')
+            string = warrior.name + '= soldato'
+            skills.append(string)
+        elif user_input == "2":
+            string = warrior.name + '= scout'
+            print("Ok, considererò Malus 6+ in fase di testing per il " + str(warrior.name) + '...')
+            skills.append(string)
+        elif user_input == "3":
+            string = warrior.name + '= selvaggio'
+            print("Ok, considererò Doppio in fase di testing per il " + str(warrior.name) + '...')
+            skills.append(string)
         else:
-            continue
+            print("Ok, nessuna skill inserita per " + str(warrior.name))
 
         user_input = input("Vuoi aggiungere un'altra classe? (Digita y/n) ")
         
@@ -222,16 +245,16 @@ def main():
                 win_soglia += 1
                 dan_max = throwmax + throwmin
                 dan_pur += dan_max
-                if (str(warrior.name)).lower() in skills and (str(warrior.name)).lower() == 'scout':    # Danno Critico
+                if (str(warrior.name)).lower() in skills and 'scout' in (str(warrior.name)).lower():    # Danno Critico
                     skill_count += 1
                     explosivemin = min(listAttacks)*2
                     print("     Danno Critico: il risultato dell'altro dado raddoppia!   " + str(throwmin) + ' --x2--> ' + str(explosivemin))
                     dan_max += throwmin
-                if (str(warrior.name)).lower() in skills and (str(warrior.name)).lower() == 'selvaggio' and (result1 >= 6): # Malus 6+
+                if (str(warrior.name)).lower() in skills and 'selvaggio' in (str(warrior.name)).lower() and (result1 >= 6): # Malus 6+
                     skill_count += 1
                     print("     Malus 6+:   sottraggo 1 al danno totale.")
                     dan_max -= 1
-                if (str(warrior.name)).lower() in skills and (str(warrior.name)).lower() == 'soldato' and (result1 == result2): # Malus 6+
+                if (str(warrior.name)).lower() in skills and 'soldato' in (str(warrior.name)).lower() and (result1 == result2): # Doppio
                     skill_count += 1
                     print("     Doppio:   raddoppio la somma!")
                     dan_max += throwmax + throwmin
