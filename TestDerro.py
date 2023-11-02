@@ -59,12 +59,33 @@ def insert_values(list, warrior):
                     c = True
         else:
             c = True
-    d1 = input("Inserisci il 1° dado di attacco. Specifica solo il numero, i.e.: 6 per 1d6): ")
-    while (int(d1) not in diceList):
-        d1 = input("Eddai, famo i seri, sto dado non esiste... metti quello giusto va: ")
-    d2 = input("Inserisci il 2° dado di attacco. Specifica solo il numero, i.e.: 6 per 1d6): ")
-    while (int(d2) not in diceList):
-        d2 = input("Ao che stai a giocà, sto dado non esiste... metti quello giusto va: ")
+   
+    c = False
+    d1 = 0
+    while ((c != True or d1 == 0 or str(d1).isalpha())):
+        d1 = input("Inserisci il 1° dado di attacco (il maggiore, se esiste). Specifica solo il numero (x per 1dx): ")
+        try:
+            d1 = int(d1)
+            if int(d1) in diceList:
+                c = True
+            else:
+                print("Eddai, famo i seri, sto dado non esiste... metti quello giusto va: ")
+        except: 
+            print("Un numero, suvvia...")
+    
+    c = False
+    d2 = 0
+    while ((c != True or d2 == 0 or str(d2).isalpha())):
+        d2 = input("Inserisci il 2° dado di attacco (il minore, se esiste). Specifica solo il numero (x per 1dx): ")
+        try:
+            d2 = int(d2)
+            if int(d2) in diceList:
+                c = True
+            else:
+                print("Ao che stai a giocà, sto dado non esiste... metti quello giusto va: ")
+        except: 
+            print("Un numero, suvvia...")
+    
 
     warrior.name = str(classe)
     warrior.dice1 = int(d1)
