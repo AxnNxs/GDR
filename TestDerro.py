@@ -157,30 +157,74 @@ def main():
 
     while (c != True and skip == False):
         warrior = warriorClass()
+        print('\n')
         insert_values(warriorList, warrior)
-
-        user_input = input("Che abilità vuoi settare per questa classe? (Digita il numero corrispondente o premi altro per ignorare):\n" +
+        print('\n')
+        print("Che abilità vuoi settare per questa classe? (Digita il numero corrispondente o premi altro per ignorare):\n" +
+                           "0 - Nessuna Skill, prosegui\n"
                            "1 - Danno Critico: il dado più piccolo viene raddoppiato quando il primo supera la soglia\n" +
-                           "2 - Malus 6+: quando il d8 fa 6+ si ha un malus di -1\n" +
+                           "2 - Malus 6+: quando è il dado maggiore a colpire si ha un malus di -1 al minore.\n" +
                            "3 - Doppio: quando i due dadi sono uguali si raddoppiano\n")
-        if user_input == "1":
-            print("Ok, considererò Danno Critico in fase di testing per il " + str(warrior.name) + '...')
-            string = warrior.name + ' = scout'
-            skills.append(string)
-            warriorList[-1].name = string
-        elif user_input == "2":
-            string = warrior.name + ' = selvaggio'
-            print("Ok, considererò Malus 6+ in fase di testing per il " + str(warrior.name) + '...')
-            print("Nota: se il dado maggiore è inferiore al d6 questa abilità è nulla.")
-            skills.append(string)
-            warriorList[-1].name = string
-        elif user_input == "3":
-            string = warrior.name + ' = soldato'
-            print("Ok, considererò Doppio in fase di testing per il " + str(warrior.name) + '...')
-            skills.append(string)
-            warriorList[-1].name = string
-        else:
-            print("Ok, nessuna skill inserita per " + str(warrior.name))
+        
+        nskills = 0
+        check = -1
+        while (check <= 0):
+            user_input = input("Prego, inserisci il numero corrispondente: ")
+            if str(user_input) == "0":
+                check = 1
+            elif str(user_input) == "1":
+                string = str(warrior.name + ', scout').lower()
+                print("Ok, considererò Danno Critico in fase di testing per il " + str(warrior.name) + '...')
+                if (string in skills or 'scout' in str(warriorList[-1].name).lower()):
+                    print("Ma aspetta, l'avevi già messa. Mannaggia Derro, quando se scherza bisogna esse seri! A rispiegate va...\n")
+                    continue
+                nskills +=1
+                skills.append(string)
+                warriorList[-1].name = string
+                user_input2 = input("Vuoi aggiungere un'altra skill per questa classe? Inserisci Y per conferma, N per proseguire: ")
+                if str(user_input2) == 'y':
+                    check = -1
+                    print('\n')
+                else:
+                    print('Lo interpreto come un no.\n')
+                    check = 1
+            elif str(user_input) == "2":
+                string = str(warrior.name + ', selvaggio').lower()
+                print("Ok, considererò Malus 6+ in fase di testing per il " + str(warrior.name) + '... ')
+                if (string in skills or 'selvaggio' in str(warriorList[-1].name).lower()):
+                    print("Ma aspetta, l'avevi già messa. Mannaggia Derro, quando se scherza bisogna esse seri! A rispiegate va...\n")
+                    continue
+                nskills +=1
+                skills.append(string)
+                warriorList[-1].name = string
+                user_input2 = input("Vuoi aggiungere un'altra skill per questa classe? Inserisci Y per conferma, N per proseguire: ")
+                if str(user_input2) == 'y':
+                    check = -1
+                    print('\n')
+                else:
+                    print('Lo interpreto come un no.\n')
+                    check = 1
+            elif str(user_input) == "3":
+                string = str(warrior.name + ', soldato').lower()
+                print("Ok, considererò Doppio in fase di testing per il " + str(warrior.name) + '...')
+                if (string in skills or 'soldato' in str(warriorList[-1].name).lower()):
+                    print("Ma aspetta, l'avevi già messa. Mannaggia Derro, quando se scherza bisogna esse seri! A rispiegate va...\n")
+                    continue
+                nskills +=1
+                skills.append(string)
+                warriorList[-1].name = string
+                user_input2 = input("Vuoi aggiungere un'altra skill per questa classe? Inserisci Y per conferma, N per proseguire: ")
+                if str(user_input2) == 'y':
+                    check = -1
+                    print('\n')
+                else:
+                    print('Lo interpreto come un no.\n')
+                    check = 1
+            else:
+                print("Inserisci un numero valido, compreso tra 0 e 3.")
+        
+        if nskills == 0:
+            print("Ok, Numero di Skill inserite per " + str(warrior.name) + ': ' + str(nskills) + '.')
 
         user_input = input("Vuoi aggiungere un'altra classe? (Digita y/n) ")
         
@@ -235,7 +279,9 @@ def main():
         win_soglia = 0
         dan_tot = 0
         dan_pur = 0
-        skill_count = 0
+        skill_count_scout = 0
+        skill_count_soldato = 0
+        skill_count_selvaggio = 0
         explosions =  0
         for j in range(1, n + 1):
             explosion1 = 0
@@ -271,24 +317,25 @@ def main():
             if throwmax >= s:
                 print('Il colpo è andato a segno DERRO! ENNAMO EDDAJE EDDERRO!')
                 win_soglia += 1
-                dan_max = throwmax + throwmin
+                dan_max = throwmin
                 dan_pur += dan_max
-                if (str(warrior.name)).lower() in skills and 'scout' in (str(warrior.name)).lower():    # Danno Critico
-                    skill_count += 1
+
+                if ((str(warrior.name)).lower() in skills) and ('scout' in (str(warrior.name).lower())):    # Danno Critico
+                    skill_count_scout += 1
                     explosivemin = min(listAttacks)*2
                     print("     Danno Critico: il risultato dell'altro dado raddoppia!   " + str(throwmin) + ' --x2--> ' + str(explosivemin))
                     dan_max += throwmin
-                if (str(warrior.name)).lower() in skills and 'selvaggio' in (str(warrior.name)).lower() and (result1 >= 6): # Malus 6+
-                    skill_count += 1
+                if (str(warrior.name)).lower() in skills and 'selvaggio' in (str(warrior.name).lower()) and (result1 == throwmax): # Malus 6+
+                    skill_count_selvaggio += 1
                     print("     Malus 6+:   sottraggo 1 al danno totale.")
                     dan_max -= 1
-                if (str(warrior.name)).lower() in skills and 'soldato' in (str(warrior.name)).lower() and (result1 == result2 or explosions == 2): # Doppio
-                    skill_count += 1
+                if (str(warrior.name)).lower() in skills and 'soldato' in (str(warrior.name).lower()) and (result1 == result2 or explosions == 2): # Doppio
+                    skill_count_soldato += 1
                     print("     Doppio:   raddoppio la somma!")
                     # if(explosions == 2):
                     #     print("QUADRUPLO!")
                     #     dan_max += throwmax + throwmin
-                    dan_max += throwmax + throwmin
+                    dan_max += throwmin
                 print("     Il danno sferrato ammonta in totale a:                   " + str(dan_max))
                 dan_tot += dan_max
                 
@@ -299,7 +346,12 @@ def main():
         dictWarrior.update({'Vittorie' : win_soglia})
         dictWarrior.update({'Danni inflitti' : dan_tot})
         dictWarrior.update({'Danni senza Skill' : dan_pur})
-        dictWarrior.update({'Skill utilizzate' : skill_count})
+        if (str(warrior.name)).lower() in skills and 'soldato' in (str(warrior.name).lower()):
+            dictWarrior.update({'Skill utilizzate da soldato' : skill_count_soldato})
+        if (str(warrior.name)).lower() in skills and 'scout' in (str(warrior.name).lower()):
+            dictWarrior.update({'Skill utilizzate da scout' : skill_count_scout})
+        if (str(warrior.name)).lower() in skills and 'selvaggio' in (str(warrior.name).lower()):
+            dictWarrior.update({'Skill utilizzate da selvaggio' : skill_count_selvaggio})
         dictWarrior.update({'Dadi esplosi' : explosions})
         ListAllWarriors.append(dictWarrior)
         print("\nCiclo di Test finito per il combattente " + str(warrior.name) + '...')
@@ -311,19 +363,31 @@ def main():
     #print(ListAllWarriors)     #for testing purposes
     for i in ListAllWarriors:
         vin = 0
+        dan_sc = 0
+        dan_sd = 0
+        dan_sv = 0
         dan = 0
         nam = ''
         for j in i:
-            if (j != 'Vittorie' and j != 'Danni inflitti' and j != 'Skill utilizzate' and j != 'Danni senza Skill' and j != 'Dadi esplosi'):
+            if (j != 'Vittorie' and j != 'Danni inflitti' and j != 'Skill utilizzate da soldato' and j != 'Skill utilizzate da selvaggio' and j != 'Skill utilizzate da scout' and j != 'Danni senza Skill' and j != 'Dadi esplosi'):
                 nam = j
-                print('Il combattente ' + str(j), end = "")
-            elif (j != 'Danni inflitti' and j != 'Skill utilizzate' and j != 'Danni senza Skill' and j != 'Dadi esplosi'):
+                print('Il combattente ' + str(nam), end = "")
+            elif (j != 'Danni inflitti' and j != 'Skill utilizzate da soldato' and j != 'Skill utilizzate da selvaggio' and j != 'Skill utilizzate da scout' and j != 'Danni senza Skill' and j != 'Dadi esplosi'):
                 vin = i[j]
                 print(' ha un numero di ' + str(j) + ' pari a ' + str(i[j]) + ' su ' + str(n) + ' attacchi.' +
                       '\nCiò vuol dire che ha una Probabilità di attacco a segno del            ' + str(round(((i[j]/n)*100), 2)) + '%')
-            elif (j != 'Skill utilizzate' and j != 'Danni senza Skill' and j != 'Dadi esplosi'):
+            elif (j != 'Skill utilizzate da soldato' and j != 'Skill utilizzate da selvaggio' and j != 'Skill utilizzate da scout' and j != 'Danni senza Skill' and j != 'Dadi esplosi'):
                 dan = i[j]
                 print(str(j) + ' in media sul numero di Attacchi (DPA):                  ' + str(round(i[j]/n, 2)))
+            elif (j != 'Skill utilizzate da selvaggio' and j != 'Skill utilizzate da scout' and j != 'Danni senza Skill' and j != 'Dadi esplosi'):
+                dan_sd = i[j]
+                print('Utilizzi di Skill da soldato:                                          ' + str(dan_sd) + '/' + str(n))
+            elif (j != 'Skill utilizzate da scout' and j != 'Danni senza Skill' and j != 'Dadi esplosi'):
+                dan_sv = i[j]
+                print('Utilizzi di Skill da selvaggio:                                        ' + str(dan_sv) + '/' + str(n))
+            elif (j != 'Danni senza Skill' and j != 'Dadi esplosi'):
+                dan_sc = i[j]
+                print('Utilizzi di Skill da scout:                                            ' + str(dan_sc) + '/' + str(n))
             elif (j != 'Danni senza Skill' and j != 'Dadi esplosi'):
                 print('Occasioni di ' + str(j) + ':                                         ' + str(i[j]))
             elif  j != 'Dadi esplosi':
